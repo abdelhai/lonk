@@ -9,7 +9,7 @@ db = Base("links")
 
 
 async def home(request):
-    return HTMLResponse("Hello, world!")
+    return HTMLResponse(open("index.html").read())
 
 
 async def add(request):
@@ -17,9 +17,9 @@ async def add(request):
 
     # skip the junk
     if not payload or "url" not in payload:
-        return JSONResponse({"message": "No url provided"}, 400)
+        return JSONResponse({"error": "No url provided"}, 400)
     if not payload["url"].startswith("http"):
-        return JSONResponse({"message": "Invalid url"}, 400)
+        return JSONResponse({"error": "Invalid url"}, 400)
     # if "slug" in payload and payload["slug"] == "api":
     #     return JSONResponse({"message": "Invalid slug"}, 400)
 
@@ -31,18 +31,13 @@ async def add(request):
                 "hits": 0,
                 "created_at": datetime.now().isoformat(),
                 "updated_at": datetime.now().isoformat(),
-                "key": payload.get(
-                    "slug",
-                    "".join(
-                        random.choices(string.ascii_lowercase + string.digits, k=6)
-                    ),
-                ),
+                "key": payload.get("slug") or "".join(random.choices(string.ascii_lowercase + string.digits, k=6)),
             }
         )
     except Exception as e:
         if e.code == 409:
-            return JSONResponse({"message": "Slug already exists"}, 400)
-        return JSONResponse({"message": "Something went wrong"}, 500)
+            return JSONResponse({"error": "Slug already exists"}, 400)
+        return JSONResponse({"error": "Something went wrong"}, 500)
 
     return JSONResponse(item)
 

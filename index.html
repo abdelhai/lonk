@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>long ~ give your links a haircut</title>  
+</head>
+<body>
+    <h1>long</h1>
+    <p>give your links a haircut</p>
+    <form id="form">
+        <input type="url" name="url" placeholder="https://deta.space" required/>
+        <input type="text" name="slug" placeholder="abc"/>
+        <input type="submit" value="shorten" />
+    </form>
+    <code id="response"></code>
+
+    
+    <script>
+        document.getElementById("form").addEventListener("submit", async function(e) {
+            e.preventDefault();
+            var payload = {
+                url: document.getElementsByName("url")[0].value,
+                slug: document.getElementsByName("slug")[0].value || null
+            };
+            // console.log(payload);
+            const response = await fetch("/add", {
+                method: "POST",
+                body: JSON.stringify(payload),
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+            const data = await response.json();
+            if (!data.error) {
+                const root = window.location.href;
+                let msg = `${root}~${data.key} <a href="${root}~${data.key}">open</a>`;
+                document.getElementById("response").innerHTML = msg;
+                // console.log(data);
+            } else {
+                document.getElementById("response").innerHTML = data.error || "unknown error";
+            }
+        });
+
+    </script>
+</body>
+</html>
