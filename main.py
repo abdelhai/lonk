@@ -20,8 +20,8 @@ async def add(request):
         return JSONResponse({"message": "No url provided"}, 400)
     if not payload["url"].startswith("http"):
         return JSONResponse({"message": "Invalid url"}, 400)
-    if "slug" in payload and payload["slug"] == "api":
-        return JSONResponse({"message": "Invalid slug"}, 400)
+    # if "slug" in payload and payload["slug"] == "api":
+    #     return JSONResponse({"message": "Invalid slug"}, 400)
 
     # TODO: handle when random slug already exists
     try:
@@ -57,10 +57,10 @@ async def redirect(request):
 
 
 app = Starlette(
-    debug=os.getenv("DETA_RUNTIME", True),
+    debug=os.getenv("DETA_SPACE_APP", True),
     routes=[
         Route("/", home, methods=["GET"]),
-        Route("/api/add", add, methods=["POST"]),
-        Route("/{slug}", redirect, methods=["GET"]),
+        Route("/add", add, methods=["POST"]),
+        Route("/~{slug}", redirect, methods=["GET"]),
     ],
 )

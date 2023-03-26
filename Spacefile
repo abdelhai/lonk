@@ -6,3 +6,6 @@ micros:
     engine: python3.9
     primary: true
     dev: uvicorn main:app --port $PORT --reload
+    presets:
+      api_keys: true
+    public_routes: ["/~*"]
