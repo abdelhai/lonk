@@ -12,6 +12,7 @@
         <input type="submit" value="shorten" />
     </form>
     <code id="response"></code>
+    <p id="entries"></p>
 
     
     <script>
@@ -39,6 +40,24 @@
                 document.getElementById("response").innerHTML = data.error || "unknown error";
             }
         });
+
+        // list all links
+        const list = async () => {
+            const response = await fetch("/?list");
+            const data = await response.json();
+            if (data.entries) {
+                let msg = "";
+                for (entry of data.entries) {
+                    // const entry = data.entries[i];
+                    msg += `<li><a href="${window.location.href}~${entry.key}" target="_blank">${window.location.href}~${entry.key} (${entry.hits})</a></li>`;
+                }
+                document.getElementById("entries").innerHTML = msg;
+            }
+        }
+        const run = async () => {
+            await list();
+        }
+        run();
 
     </script>
 </body>

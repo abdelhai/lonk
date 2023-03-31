@@ -9,6 +9,11 @@ db = Base("links")
 
 
 async def home(request):
+    # print(request.url.path, request.url.query == "list")
+    if request.url.query == "list":
+        # entries = db.fetch().items
+        # print(entries)
+        return JSONResponse({"entries": db.fetch().items})
     return HTMLResponse(open("index.html").read())
 
 
@@ -49,6 +54,7 @@ async def redirect(request):
         return HTMLResponse("lonk not found, friendo", 404)
     db.update({"hits": db.util.increment()}, slug)
     return RedirectResponse(item["url"])
+
 
 
 app = Starlette(
